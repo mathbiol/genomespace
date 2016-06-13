@@ -19,26 +19,26 @@
 		<input type="text" id="thisPageUrl" name="url" value=" <%=window.location%>"/>
 	</form>
 </div>
-<!--   
+<!--
    <script src="//gsui.genomespace.org/jsui/js/jquery-1.7.2.min.js" type="text/javascript"></script>
   <script src="//gsui.genomespace.org/jsui/js/jquery-ui-1.8.20.custom.min.js" type="text/javascript"></script>
- --> 
+ -->
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.20/jquery-ui.min.js"></script> 
- 
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.20/jquery-ui.min.js"></script>
+
     <script type="text/javascript">
     /* this and the hidden form use the JSUI to force a login and return here */
     var username;
 	var token;
-   
+
    if (navigator.appName == 'Microsoft Internet Explorer') {
 	alert("Sorry, the GSUI does not yet work on InternetExplorer.  Please use Firefox or Chrome instead.");
    }
-   
+
     // set the callback url in case we need to login
 	$('#thisPageUrl').text(window.location);
 	$('#thisPageUrl').val(window.location);
-	
+
 	$.ajaxSetup({
 		xhrFields: {
             withCredentials: true
@@ -46,20 +46,20 @@
         mozBackgroundRequest: true,
         crossDomain: true
 	});
-	
+
 	// call to see if we were logged in to the jsui
 	// should redirect to login if there are any problems
 	jQuery.ajax({
         url:    'https://gsui.genomespace.org/jsui/gslogin',
         datatype: 'json',
-        cache: false, 
-       
+        cache: false,
+
         success: function(result){
         	token = result.gstoken;
-        	
+
         	// XXX hack to allow use from a local server without a local identityServer being started up as well
         	document.cookie = "gs-token="+token;
-        	
+
     		username = result.gsusername;
     		$('#username').html(username);
     		if (username == "null") {
@@ -71,33 +71,34 @@
     	 },
         error: function(f ){
      	 	$('#hiddenLoginForm').submit();
-        }       
-  });      
+        }
+  });
 
 
 	 </script>
- 
- 
+
+
    <script type="text/javascript">
    /*
     * this script is to do an ajax call with credentials etc
     */
-   
+
    $(document).ready(function(){
-	   
+
 	   $('#gsCallForFormats').click(function(e){
-		   
+
 		   $.ajax({
 				  url: 'https://dm.genomespace.org/datamanager/v1.0/dataformat/list',
 				  type: 'get',
 				  context: document.body,
 				  dataType: 'json',
 				  success: function(data) {
-					  alert(data);
+					  //alert(data);
+						response.textContent=JSON.stringify(data,null,3)
 				  },
 				  error: function(xhr, status, err){
 					  if (status == 200 ){
-						  allDataformats = new Array(); 
+						  allDataformats = new Array();
 					  }   else if ((xhr.status==0) && (xhr.readyState== 0)) {
 						  // if a token is invalid and we get a redirect we cannot see because the browser handles it
 						  document.forms["hiddenLoginForm"].submit();
@@ -106,16 +107,16 @@
 						  alert("Could not retrieve data formats "+xhr+"  " +status );
 					  }
 				  }
-				});	
-		   
+				});
+
 	   });
-   
+
    });
-   
+
    </script>
- 
- 
- 
+
+
+
 </head>
 <body>
 
@@ -126,12 +127,13 @@
 </div>
 
 <p>
-<h3>GenomeSpace CORS test page</h3>
+<h3>GenomeSpace CORS test page [<a target="_blank" href="https://github.com/mathbiol/genomespace/blob/gh-pages/corstest.html">source</a>]</h3>
 
 </p>
 <p>
 <button id='gsCallForFormats'>Test call for formats</button>
 </p>
+<pre style="color:blue" id="response"></pre>
 
 
 
@@ -140,7 +142,8 @@
 </div>
 
 
-<div style="position: absolute;bottom:0">
+<!--<div style="position: absolute;bottom:0">-->
+<div>
 <span class="footer_left">&copy;2016  <a href="http://www.ucsd.edu">The University of California, San Diego</a> and <a href="http://www.broadinstitute.org">The Broad Institute of MIT and Harvard</a></span>
 <span class="footer_right"></span>
 </div>
