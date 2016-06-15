@@ -15,6 +15,28 @@ gensp.getDiv=function(){
 	}
 }
 
+gensp.msg=function(txt,id,c){
+	if(document.getElementById('genspDiv')){ // just in case
+		gensp.div=document.getElementById('genspDiv')
+	}
+	console.log(txt)
+	if(!id){id='genspMsg'}
+	if(!c){c='blue'}
+	if(document.getElementById(id)){ // if the msg div exists
+		gensp.msgDiv=document.getElementById(id)
+	}else{
+		if(gensp.div){ // if the division exists, then create the msgDiv in it
+			gensp.msgDiv=document.createElement('div')
+			gensp.msgDiv.id=id
+			gensp.div.appendChild(gensp.msgDiv)
+		}
+	}
+	if(gensp.msgDiv){
+		gensp.msgDiv.textContent=txt
+		gensp.msgDiv.style.color=c
+	}
+}
+
 gensp.login=function(fun){ // Ted, let's see if I got it right
     // check if user is logged in
     // 1. config ajax call
@@ -29,9 +51,10 @@ gensp.login=function(fun){ // Ted, let's see if I got it right
 	$.getJSON('https://gsui.genomespace.org/jsui/gslogin')
 	//$.getJSON('login.json')
 	 .then(function(x){
-	 	gensp.connection=x;
-	 	console.log('logged in as '+gensp.connection.gsusername+' as '+new Date())
-		if(gensp.connection.gsusername!=="null"){ // connected	
+	 	//console.log('logged in as '+x.gsusername+' as '+new Date())
+		gensp.msg('logged in at '+x.gsusername+' as '+new Date())
+		if(x.gsusername!=="null"){ // connected	
+			gensp.connection=x // register connection
 			if(fun){fun()} // callback
 		}else{ // not connected yet
 			var div = document.createElement('div')
